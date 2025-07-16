@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ZXing Minimal Test – Working</title>
-  <!-- ✅ Use the library bundle that exposes ZXing globally -->
+  <title>ZXing Minimal Test – FINAL</title>
+  <!-- ✅ Use the library bundle -->
   <script src="https://unpkg.com/@zxing/library@latest"></script>
   <style>
     body { font-family: sans-serif; font-size: 1.2rem; padding: 20px; }
@@ -13,7 +13,7 @@
   </style>
 </head>
 <body>
-  <h1>ZXing Minimal Test – Working 4:19 PM</h1>
+  <h1>ZXing Minimal Test – FINAL 4:21 PM</h1>
 
   <button id="startButton">Start Scanner</button>
   <video id="video" autoplay playsinline></video>
@@ -23,6 +23,8 @@
     const output = document.getElementById('output');
     const videoElem = document.getElementById('video');
     const startButton = document.getElementById('startButton');
+
+    // ✅ Create reader instance
     const reader = new ZXing.BrowserMultiFormatReader();
 
     startButton.addEventListener('click', async () => {
@@ -30,7 +32,8 @@
       videoElem.style.display = 'block';
 
       try {
-        const devices = await ZXing.BrowserCodeReader.listVideoInputDevices();
+        // ✅ use the INSTANCE method, not static
+        const devices = await reader.listVideoInputDevices();
         console.log('Devices:', devices);
 
         if (!devices || devices.length === 0) {
