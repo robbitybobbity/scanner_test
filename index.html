@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h1>ZXing Minimal Test – Fixed</h1>
+  <h1>ZXing Minimal Test – Fixed 2:59 PM</h1>
 
   <button id="startButton">Start Scanner</button>
   <video id="video" autoplay playsinline></video>
@@ -29,7 +29,7 @@
       videoElem.style.display = 'block';
 
       try {
-        // ✅ use the instance method instead of BrowserCodeReader
+        // ✅ FIX: use instance method
         const devices = await reader.listVideoInputDevices();
         console.log('Devices:', devices);
 
