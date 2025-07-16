@@ -2,8 +2,9 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>ZXing Minimal Test – Fixed</title>
-  <script src="https://unpkg.com/@zxing/browser@latest"></script>
+  <title>ZXing Minimal Test – Working</title>
+  <!-- ✅ Use the library bundle that exposes ZXing globally -->
+  <script src="https://unpkg.com/@zxing/library@latest"></script>
   <style>
     body { font-family: sans-serif; font-size: 1.2rem; padding: 20px; }
     button { font-size: 1.2rem; padding: 10px 20px; margin: 10px 0; }
@@ -12,52 +13,50 @@
   </style>
 </head>
 <body>
-  <h1>ZXing Minimal Test – Fixed 4:15 PM</h1>
+  <h1>ZXing Minimal Test – Working 4:19 PM</h1>
 
   <button id="startButton">Start Scanner</button>
   <video id="video" autoplay playsinline></video>
   <p id="output">Ready.</p>
 
-<script>
-  const output = document.getElementById('output');
-  const videoElem = document.getElementById('video');
-  const startButton = document.getElementById('startButton');
-  const reader = new ZXing.BrowserMultiFormatReader();
+  <script>
+    const output = document.getElementById('output');
+    const videoElem = document.getElementById('video');
+    const startButton = document.getElementById('startButton');
+    const reader = new ZXing.BrowserMultiFormatReader();
 
-  startButton.addEventListener('click', async () => {
-    output.textContent = "Requesting camera…";
-    videoElem.style.display = 'block';
+    startButton.addEventListener('click', async () => {
+      output.textContent = "Requesting camera…";
+      videoElem.style.display = 'block';
 
-    try {
-      // ✅ use the static method from BrowserCodeReader
-      const devices = await ZXing.BrowserCodeReader.listVideoInputDevices();
-      console.log('Devices:', devices);
+      try {
+        const devices = await ZXing.BrowserCodeReader.listVideoInputDevices();
+        console.log('Devices:', devices);
 
-      if (!devices || devices.length === 0) {
-        output.textContent = "No cameras found.";
-        return;
+        if (!devices || devices.length === 0) {
+          output.textContent = "No cameras found.";
+          return;
+        }
+
+        const firstCamera = devices[0].deviceId;
+        console.log('Using camera:', firstCamera);
+
+        reader.decodeFromVideoDevice(firstCamera, videoElem, (result, err) => {
+          if (result) {
+            console.log('Decoded:', result.getText());
+            output.textContent = `✅ Scanned: ${result.getText()}`;
+            reader.reset();
+            videoElem.style.display = 'none';
+          }
+          if (err && !(err instanceof ZXing.NotFoundException)) {
+            console.error('Decode error:', err);
+          }
+        });
+      } catch (e) {
+        console.error('Camera error:', e);
+        output.textContent = `Error starting camera: ${e.message}`;
       }
-
-      const firstCamera = devices[0].deviceId;
-      console.log('Using camera:', firstCamera);
-
-      reader.decodeFromVideoDevice(firstCamera, videoElem, (result, err) => {
-        if (result) {
-          console.log('Decoded:', result.getText());
-          output.textContent = `✅ Scanned: ${result.getText()}`;
-          reader.reset();
-          videoElem.style.display = 'none';
-        }
-        if (err && !(err instanceof ZXing.NotFoundException)) {
-          console.error('Decode error:', err);
-        }
-      });
-    } catch (e) {
-      console.error('Camera error:', e);
-      output.textContent = `Error starting camera: ${e.message}`;
-    }
-  });
-</script>
-
+    });
+  </script>
 </body>
 </html>
